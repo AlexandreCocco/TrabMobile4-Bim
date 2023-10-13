@@ -1,4 +1,12 @@
 package com.example.cadastropastas;
 
-public class ListaPasta {
+import android.os.Bundle;
+
+public class ListaPasta extends MainActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_listpasta);
+
+    }
 }

@@ -1,4 +1,11 @@
 package com.example.cadastropastas;
 
-public class ListaConteudo {
+import android.os.Bundle;
+public class ListaConteudo extends MainActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_listcont);
+
+    }
 }
