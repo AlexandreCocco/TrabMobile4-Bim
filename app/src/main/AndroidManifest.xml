@@ -13,6 +13,13 @@
         android:theme="@style/Theme.CadastroPastas"
         tools:targetApi="31">
 
+        <activity android:name=".ExibirConteudo"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+        </intent-filter>
+        </activity>
+
         <activity android:name=".ListaConteudo"
             android:exported="true">
             <intent-filter>
