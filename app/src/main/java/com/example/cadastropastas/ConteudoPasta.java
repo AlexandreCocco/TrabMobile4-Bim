@@ -1,40 +1,63 @@
 package com.example.cadastropastas;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConteudoPasta extends MainActivity {
+public class ConteudoPasta extends MainActivity implements PastaAdapter.OnPastaClickListener {
     private RecyclerView recyclerViewConteudo;
-    private ConteudoAdapter conteudoAdapter;
+    private PastaAdapter pastaAdapter;
+    private List<String> pastas;
     private SQLiteDatabase database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contpasta);
+
         recyclerViewConteudo = findViewById(R.id.recyclerViewConteudo);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         database = dbHelper.getReadableDatabase();
 
-        List<String> pastas = new ArrayList<>();
-        Cursor cursor = database.query(DatabaseHelper.TABLE_PASTAS, new String[]{DatabaseHelper.COLUMN_NOME}, null, null, null, null, null);
+        pastas = loadPastasFromDatabase();
 
-        if (cursor != null && cursor.moveToFirst()) {
+        pastaAdapter = new PastaAdapter(pastas, this);
+        recyclerViewConteudo.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewConteudo.setAdapter(pastaAdapter);
+    }
+
+    @Override
+    public void onPastaClick(String nomePasta) {
+
+        Intent intent = new Intent(this, ExibirConteudo.class);
+        intent.putExtra("nomePasta", nomePasta);
+        startActivity(intent);
+
+    }
+
+    // Função para carregar as pastas do banco de dados
+    private List<String> loadPastasFromDatabase() {
+        List<String> pastaList = new ArrayList<>();
+        String[] columns = {DatabaseHelper.COLUMN_NOME};
+        Cursor cursor = database.query(DatabaseHelper.TABLE_PASTAS, columns, null, null, null, null, null);
+
+        if (cursor != null && ((Cursor) cursor).moveToFirst()) {
             do {
-                // Recupere o valor da coluna pelo índice
                 String nomePasta = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_NOME));
-                pastas.add(nomePasta);
+                pastaList.add(nomePasta);
             } while (cursor.moveToNext());
 
             cursor.close();
         }
-        conteudoAdapter = new ConteudoAdapter(pastas, this);
-        recyclerViewConteudo.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewConteudo.setAdapter(conteudoAdapter);
+
+        return pastaList;
     }
 }
